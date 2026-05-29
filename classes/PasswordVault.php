@@ -20,8 +20,8 @@ class PasswordVault
         string $userKey
     ): bool
     {
-        $iv = openssl_random_pseudo_bytes(16);
-        
+        $iv = "";
+
         $encryptedPassword =
             Encryption::encryptPassword(
                 $password,

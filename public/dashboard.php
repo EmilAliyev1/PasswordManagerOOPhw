@@ -35,6 +35,16 @@ if (!Auth::isLoggedIn())
 
 <br><br>
 
+<a href="change_password.php">
+    Change Password
+</a>
+
+<br><br>
+
+<a href="generate.php">Password Generator</a>
+
+<br><br>
+
 <a href="passwords.php">
     View Passwords
 </a>

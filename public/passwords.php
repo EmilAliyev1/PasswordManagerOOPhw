@@ -74,5 +74,11 @@ htmlspecialchars(
 
 </table>
 
+<br>
+
+<a href="dashboard.php">
+    Dashboard
+</a>
+
 </body>
 </html>

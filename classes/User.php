@@ -25,7 +25,7 @@ class User
 
         $userKey = Encryption::generateUserKey();
 
-        $iv = openssl_random_pseudo_bytes(16);
+        $iv = "";
 
         $encryptedKey = Encryption::encryptUserKey(
             $userKey,
@@ -52,6 +52,83 @@ class User
             $passwordHash,
             base64_encode($encryptedKey),
             base64_encode($iv)
+        ]);
+    }
+
+    public function getUserById(int $id): array|false
+    {
+        $stmt = $this->db->prepare("
+            SELECT *
+            FROM users
+            WHERE id = ?
+        ");
+
+        $stmt->execute([$id]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function changePassword(
+        int $userId,
+        string $oldPassword,
+        string $newPassword
+    ): bool
+    {
+        $user = $this->getUserById($userId);
+
+        if (!$user)
+        {
+            return false;
+        }
+
+        if (!password_verify(
+            $oldPassword,
+            $user["password_hash"]
+        ))
+        {
+            return false;
+        }
+
+        $userKey =
+            Encryption::decryptUserKey(
+                base64_decode(
+                    $user["encrypted_user_key"]
+                ),
+                $oldPassword,
+                base64_decode(
+                    $user["key_iv"]
+                )
+            );
+
+        $newIv = openssl_random_pseudo_bytes(16);
+
+        $newEncryptedKey =
+            Encryption::encryptUserKey(
+                $userKey,
+                $newPassword,
+                $newIv
+            );
+
+        $newHash =
+            password_hash(
+                $newPassword,
+                PASSWORD_DEFAULT
+            );
+
+        $stmt = $this->db->prepare("
+            UPDATE users
+            SET
+                password_hash = ?,
+                encrypted_user_key = ?,
+                key_iv = ?
+            WHERE id = ?
+        ");
+
+        return $stmt->execute([
+            $newHash,
+            base64_encode($newEncryptedKey),
+            base64_encode($newIv),
+            $userId
         ]);
     }
 }

@@ -7,19 +7,11 @@ class Encryption
         return random_bytes(32);
     }
 
-    public static function encryptUserKey(
-        string $userKey,
-        string $password,
-        string $iv
-    ): string
+    public static function encryptUserKey($userKey, $password, &$iv): string
     {
         $iv = random_bytes(16);
 
-        $aesKey = hash(
-            'sha256',
-            $password,
-            true
-        );
+        $aesKey = hash('sha256', $password, true);
 
         return openssl_encrypt(
             $userKey,
@@ -30,17 +22,9 @@ class Encryption
         );
     }
 
-    public static function decryptUserKey(
-        string $encryptedKey,
-        string $password,
-        string $iv
-    ): string
+    public static function decryptUserKey($encryptedKey, $password, $iv): string
     {
-        $aesKey = hash(
-            'sha256',
-            $password,
-            true
-        );
+        $aesKey = hash('sha256', $password, true);
 
         return openssl_decrypt(
             $encryptedKey,
@@ -51,11 +35,7 @@ class Encryption
         );
     }
 
-    public static function encryptPassword(
-        string $password,
-        string $userKey,
-        string &$iv
-    ): string
+    public static function encryptPassword($password, $userKey, &$iv): string
     {
         $iv = random_bytes(16);
 
@@ -68,11 +48,7 @@ class Encryption
         );
     }
 
-    public static function decryptPassword(
-        string $encryptedPassword,
-        string $userKey,
-        string $iv
-    ): string
+    public static function decryptPassword($encryptedPassword, $userKey, $iv): string
     {
         return openssl_decrypt(
             $encryptedPassword,
