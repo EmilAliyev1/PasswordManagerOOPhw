@@ -29,6 +29,18 @@ if (!Auth::isLoggedIn())
     You are logged in.
 </p>
 
+<a href="add_password.php">
+    Add Password
+</a>
+
+<br><br>
+
+<a href="passwords.php">
+    View Passwords
+</a>
+
+<br><br>
+
 <a href="logout.php">
     Logout
 </a>

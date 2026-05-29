@@ -50,4 +50,36 @@ class Encryption
             $iv
         );
     }
+
+    public static function encryptPassword(
+        string $password,
+        string $userKey,
+        string &$iv
+    ): string
+    {
+        $iv = random_bytes(16);
+
+        return openssl_encrypt(
+            $password,
+            'AES-256-CBC',
+            $userKey,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
+    }
+
+    public static function decryptPassword(
+        string $encryptedPassword,
+        string $userKey,
+        string $iv
+    ): string
+    {
+        return openssl_decrypt(
+            $encryptedPassword,
+            'AES-256-CBC',
+            $userKey,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
+    }
 }

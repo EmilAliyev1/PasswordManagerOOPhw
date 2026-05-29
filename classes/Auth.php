@@ -37,8 +37,17 @@ class Auth
             return false;
         }
 
+        require_once "Encryption.php";
+
+        $userKey = Encryption::decryptUserKey(
+            base64_decode($user["encrypted_user_key"]),
+            $password,
+            base64_decode($user["key_iv"])
+        );
+
         $_SESSION["user_id"] = $user["id"];
         $_SESSION["username"] = $user["username"];
+        $_SESSION["user_key"] = base64_encode($userKey);
 
         return true;
     }
